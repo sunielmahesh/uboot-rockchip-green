@@ -515,6 +515,21 @@ int uclass_first_device(enum uclass_id id, struct udevice **devp)
 	return uclass_get_device_tail(dev, ret, devp);
 }
 
+int uclass_first_device_rk3328(enum uclass_id id, struct udevice **devp)
+{
+        struct udevice *dev;
+        int ret;
+
+	printf("%s:\n", __func__);
+        *devp = NULL;
+        ret = uclass_find_first_device(id, &dev);
+        if (!dev) {
+		printf("%s: dev is null\n", __func__);
+                return 0;
+	}
+        return uclass_get_device_tail(dev, ret, devp);
+}
+
 int uclass_first_device_err(enum uclass_id id, struct udevice **devp)
 {
 	int ret;
@@ -526,6 +541,23 @@ int uclass_first_device_err(enum uclass_id id, struct udevice **devp)
 		return -ENODEV;
 
 	return 0;
+}
+
+int uclass_first_device_err_rk3328(enum uclass_id id, struct udevice **devp)
+{
+        int ret;
+
+	printf("%s:\n", __func__);
+        ret = uclass_first_device_rk3328(id, devp);
+        if (ret) {
+		printf("%s: device probe not happenned successfully\n", __func__);
+                return ret;
+	} else if (!*devp) {
+		printf("%s: device probe no device exist\n", __func__);
+                return -ENODEV;
+	}
+
+        return 0;
 }
 
 int uclass_next_device(struct udevice **devp)

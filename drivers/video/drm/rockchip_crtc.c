@@ -179,6 +179,7 @@ static int rockchip_vop_probe(struct udevice *dev)
 	struct udevice *child;
 	int ret;
 
+	printf("rockchip_vop_probe\n");
 	for (device_find_first_child(dev, &child);
 	     child;
 	     device_find_next_child(&child)) {
@@ -199,6 +200,7 @@ static int rockchip_vop_bind(struct udevice *dev)
 	ofnode ports, node;
 	int ret;
 
+	printf("rockchip_vop_bind\n");
 	ports = dev_read_subnode(dev, "ports");
 	if (!ofnode_valid(ports))
 		return 0;

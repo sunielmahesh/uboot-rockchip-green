@@ -157,15 +157,19 @@ static int stdio_probe_device(const char *name, enum uclass_id id,
 	struct udevice *dev;
 	int seq, ret;
 
+	printf("stdio_probe_device\n");
 	*sdevp = NULL;
 	seq = trailing_strtoln(name, NULL);
 	if (seq == -1)
 		seq = 0;
 	ret = uclass_get_device_by_seq(id, seq, &dev);
-	if (ret == -ENODEV)
-		ret = uclass_first_device_err(id, &dev);
+//	printf("after uclass_get_device_by_seq\n");
+	if (ret == -ENODEV) {
+//		printf("ret is ENODEV\n");
+		ret = uclass_first_device_err_rk3328(id, &dev);
+	}
 	if (ret) {
-		debug("No %s device for seq %d (%s)\n", uclass_get_name(id),
+		printf("No %s device for seq %d (%s)\n", uclass_get_name(id),
 		      seq, name);
 		return ret;
 	}
@@ -173,7 +177,7 @@ static int stdio_probe_device(const char *name, enum uclass_id id,
 	sdev = list_empty(&devs.list) ? NULL :
 			list_last_entry(&devs.list, struct stdio_dev, list);
 	if (!sdev || strcmp(sdev->name, name)) {
-		debug("Device '%s' did not register with stdio as '%s'\n",
+		printf("Device '%s' did not register with stdio as '%s'\n",
 		      dev->name, name);
 		return -ENOENT;
 	}
@@ -209,8 +213,10 @@ struct stdio_dev *stdio_get_by_name(const char *name)
 	 * stdio_get_by_name().
 	 */
 	if (!strncmp(name, "vidconsole", 10) && !strchr(name, ',') &&
-	    !stdio_probe_device(name, UCLASS_VIDEO, &sdev))
+	    !stdio_probe_device(name, UCLASS_VIDEO, &sdev)) {
+//		printf("in stdio_get_by_name\n");
 		return sdev;
+	}
 #endif
 
 	return NULL;

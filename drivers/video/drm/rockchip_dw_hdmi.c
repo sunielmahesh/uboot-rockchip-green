@@ -556,6 +556,7 @@ const struct dw_hdmi_plat_data rk3568_hdmi_drv_data = {
 
 static int rockchip_dw_hdmi_probe(struct udevice *dev)
 {
+	printf("in rockchip_dw_hdmi_probe\n");
 	return 0;
 }
 

@@ -218,8 +218,9 @@ static int get_public_phy(struct display_state *state,
 	switch (data->public_phy_type) {
 	case INNO_HDMI_PHY:
 #if defined(CONFIG_ROCKCHIP_RK3328)
+		printf("%s: \n",__func__);
 		ret = uclass_get_device_by_name(UCLASS_PHY,
-						"hdmiphy@ff430000", &dev);
+						"phy@ff430000", &dev);
 #elif defined(CONFIG_ROCKCHIP_RK322X)
 		ret = uclass_get_device_by_name(UCLASS_PHY,
 						"hdmi-phy@12030000", &dev);
@@ -244,7 +245,7 @@ static int get_public_phy(struct display_state *state,
 		}
 		conn_state->phy = phy;
 
-		debug("inno hdmi phy init success, save it\n");
+		printf("inno hdmi phy init success, save it\n");
 		data->phy_drv = conn_state->phy;
 		data->phy_init = true;
 		return 0;
@@ -787,6 +788,7 @@ static int display_init(struct display_state *state)
 	int ret = 0;
 	static bool __print_once = false;
 
+	printf("in display_init\n");
 	if (!__print_once) {
 		__print_once = true;
 		printf("Rockchip UBOOT DRM driver version: %s\n", DRIVER_VERSION);
@@ -1138,25 +1140,36 @@ static int get_crtc_id(ofnode connect, bool is_ports_node)
 	int val;
 
 	if (is_ports_node) {
+//		printf("get_crtc_id: in if is_ports_node\n");
 		port_node = of_get_parent(connect.np);
 		if (!port_node)
 			goto err;
 
 		val = ofnode_read_u32_default(np_to_ofnode(port_node), "reg", -1);
-		if (val < 0)
+		if (val < 0) {
+//			printf("get_crtc_id: val 1 < 0");
 			goto err;
+		}
 	} else {
+//		printf("get_crtc_id: in else is_ports_node\n");
 		phandle = ofnode_read_u32_default(connect, "remote-endpoint", -1);
-		if (phandle < 0)
+		if (phandle < 0) {
+//			printf("get_crtc_id: phandle < 0");
 			goto err;
+		}
 
 		remote = of_find_node_by_phandle(phandle);
-		if (!remote)
+//		printf("%s: remote->full_name: %s\n",__func__,remote->full_name);
+		if (!remote) {
+//			printf("get_crtc_id: !remote");
 			goto err;
+		}
 
 		val = ofnode_read_u32_default(np_to_ofnode(remote), "reg", -1);
-		if (val < 0)
+		if (val < 0) {
+//			printf("get_crtc_id: val 2 < 0");
 			goto err;
+		}
 	}
 
 	return val;
@@ -1708,13 +1721,16 @@ static int rockchip_display_probe(struct udevice *dev)
 	struct public_phy_data *data;
 	bool is_ports_node = false;
 
+	printf("in rockchip_display_probe\n");
 #if defined(CONFIG_ROCKCHIP_RK3568)
 	rockchip_display_fixup_dts((void *)blob);
 #endif
 
 	/* Before relocation we don't need to do anything */
-	if (!(gd->flags & GD_FLG_RELOC))
+	if (!(gd->flags & GD_FLG_RELOC)) {
+		printf("Before relocation we don't need to do anything\n");
 		return 0;
+	}
 
 	data = malloc(sizeof(struct public_phy_data));
 	if (!data) {
@@ -1726,8 +1742,10 @@ static int rockchip_display_probe(struct udevice *dev)
 	init_display_buffer(plat->base);
 
 	route_node = dev_read_subnode(dev, "route");
-	if (!ofnode_valid(route_node))
+	if (!ofnode_valid(route_node)) {
+		printf("route: ENODEV\n");
 		return -ENODEV;
+	}
 
 	ofnode_for_each_subnode(node, route_node) {
 		if (!ofnode_is_available(node))
@@ -1932,6 +1950,7 @@ static int rockchip_display_probe(struct udevice *dev)
 	video_set_flush_dcache(dev, true);
 	#endif
 
+	printf("%s: done\n",__func__);
 	return 0;
 }
 

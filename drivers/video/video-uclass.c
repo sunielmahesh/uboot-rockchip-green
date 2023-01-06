@@ -88,18 +88,18 @@ int video_reserve(ulong *addrp)
 	size = DRM_ROCKCHIP_FB_SIZE + MEMORY_POOL_SIZE + cubic_lut_size;
 	*addrp = *addrp - size;
 	*addrp &= ~((1 << 20) - 1);
-	debug("Reserving %lx Bytes for video at: %lx\n", size, *addrp);
+	printf("Reserving %lx Bytes for video at: %lx\n", size, *addrp);
 #else
 	for (uclass_find_first_device(UCLASS_VIDEO, &dev);
 	     dev;
 	     uclass_find_next_device(&dev)) {
 		size = alloc_fb(dev, addrp);
-		debug("%s: Reserving %lx bytes at %lx for video device '%s'\n",
+		printf("%s: Reserving %lx bytes at %lx for video device '%s'\n",
 		      __func__, size, *addrp, dev->name);
 	}
 #endif
 	gd->video_bottom = *addrp;
-	debug("Video frame buffers from %lx to %lx\n", gd->video_bottom,
+	printf("Video frame buffers from %lx to %lx\n", gd->video_bottom,
 	      gd->video_top);
 
 	return 0;
@@ -277,7 +277,7 @@ static int video_post_bind(struct udevice *dev)
 		       dev->name);
 		return -ENOSPC;
 	}
-	debug("%s: Claiming %lx bytes at %lx for video device '%s'\n",
+	printf("%s: Claiming %lx bytes at %lx for video device '%s'\n",
 	      __func__, size, addr, dev->name);
 	gd->video_bottom = addr;
 

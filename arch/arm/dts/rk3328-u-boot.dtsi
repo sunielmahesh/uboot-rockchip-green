@@ -6,12 +6,11 @@
 
 / {
 	aliases {
-		mmc0 = &emmc;
 		mmc1 = &sdmmc;
 	};
 
 	chosen {
-		u-boot,spl-boot-order = &sdmmc, &emmc;
+		u-boot,spl-boot-order = &sdmmc;
 		stdout-path = &uart2;
 	};
 
@@ -97,4 +96,12 @@
 
 &sdmmc0_dectn {
 	u-boot,dm-spl;
+};
+
+&pinctrl {
+        u-boot,dm-pre-reloc;
+};
+
+&vop {
+        u-boot,dm-pre-reloc;
 };

@@ -243,6 +243,7 @@ static int rockchip_vop_init(struct display_state *state)
 	u16 post_csc_mode;
 	bool dclk_inv;
 
+	printf("in rockchip_vop_init\n");
 	vop = malloc(sizeof(*vop));
 	if (!vop)
 		return -ENOMEM;

@@ -354,6 +354,7 @@ static u32 inno_hdmi_phy_get_tmdsclk(struct inno_hdmi_phy *inno,
 		tmdsclk = rate;
 	}
 
+	printf("%s: tmdsclk: %u\n",__func__,tmdsclk);
 	return tmdsclk;
 }
 
@@ -461,6 +462,7 @@ static int inno_hdmi_phy_clk_is_prepared(struct inno_hdmi_phy *inno)
 		status = inno_read(inno, 0xe0) & PRE_PLL_POWER_MASK;
 	else
 		status = inno_read(inno, 0xa0) & 1;
+	printf("%s: done\n",__func__);
 
 	return status ? 0 : 1;
 }
@@ -472,6 +474,7 @@ static int inno_hdmi_phy_clk_prepare(struct inno_hdmi_phy *inno)
 				 PRE_PLL_POWER_UP);
 	else
 		inno_update_bits(inno, 0xa0, 1, 0);
+	printf("%s: done\n",__func__);
 
 	return 0;
 }
@@ -495,6 +498,7 @@ static int inno_hdmi_phy_clk_set_rate(struct inno_hdmi_phy *inno,
 		inno->plat_data->ops->pre_pll_update(inno, cfg);
 
 	inno->pixclock = rate;
+	printf("%s: inno->pixclock: %lu\n",__func__,inno->pixclock);
 
 	return 0;
 }
@@ -651,6 +655,7 @@ inno_hdmi_phy_rk3228_pre_pll_update(struct inno_hdmi_phy *inno,
 		pll_tries++;
 		udelay(100);
 	}
+	printf("%s: done\n",__func__);
 
 	return 0;
 }
@@ -663,6 +668,7 @@ static void inno_hdmi_phy_rk3328_init(struct inno_hdmi_phy *inno)
 	 */
 	inno_write(inno, 0x01, 0x07);
 	inno_write(inno, 0x02, 0x91);
+	printf("%s: done\n",__func__);
 }
 
 static int
@@ -706,6 +712,7 @@ inno_hdmi_phy_rk3328_power_on(struct inno_hdmi_phy *inno,
 	inno_write(inno, 0xca, 0);
 	inno_write(inno, 0xcb, 0);
 
+	printf("%s: phy_cfg->tmdsclock: %lu\n",__func__,phy_cfg->tmdsclock);
 	if (phy_cfg->tmdsclock > 340000000) {
 		/* Set termination resistor to 100ohm */
 		val = 75000000 / 100000;
@@ -728,6 +735,7 @@ inno_hdmi_phy_rk3328_power_on(struct inno_hdmi_phy *inno,
 
 	/* set TMDS sync detection counter length */
 	val = 47520000000UL / phy_cfg->tmdsclock;
+	printf("%s: val: %u\n",__func__,val);
 	inno_write(inno, 0xd8, (val >> 8) & 0xff);
 	inno_write(inno, 0xd9, val & 0xff);
 
@@ -751,6 +759,7 @@ inno_hdmi_phy_rk3328_power_on(struct inno_hdmi_phy *inno,
 		mdelay(100);
 	/* set pdata_en to 1 */
 	inno_update_bits(inno, 0x02, 1, 1);
+	printf("%s: \n",__func__);
 
 	return 0;
 }
@@ -820,6 +829,7 @@ inno_hdmi_phy_rk3328_pre_pll_update(struct inno_hdmi_phy *inno,
 		return -ETIMEDOUT;
 	}
 
+	printf("%s: done\n",__func__);
 	return 0;
 }
 
@@ -855,6 +865,7 @@ inno_hdmi_3328_phy_pll_recalc_rate(struct inno_hdmi_phy *inno,
 	}
 	inno->pixclock = rate;
 
+	printf("%s: rate: %lu\n",__func__,rate);
 	return rate;
 }
 
@@ -887,6 +898,7 @@ int inno_hdmi_update_phy_table(struct inno_hdmi_phy *inno, u32 *config,
 	for (j = 0; j < 14; j++)
 		phy_cfg[i].regs[j] = 0;
 
+	printf("%s: done\n",__func__);
 	return 0;
 }
 
@@ -996,6 +1008,7 @@ static int inno_hdmi_phy_init(struct rockchip_phy *phy)
 	if (inno->plat_data->ops->init)
 		inno->plat_data->ops->init(inno);
 
+	printf("%s: done\n",__func__);
 	return 0;
 }
 
@@ -1004,6 +1017,7 @@ static unsigned long inno_hdmi_phy_set_pll(struct rockchip_phy *phy,
 {
 	struct inno_hdmi_phy *inno = dev_get_priv(phy->dev);
 
+	printf("%s:\n",__func__);
 	inno_hdmi_phy_clk_prepare(inno);
 	inno_hdmi_phy_clk_is_prepared(inno);
 	inno_hdmi_phy_clk_set_rate(inno, rate);
@@ -1016,6 +1030,7 @@ inno_hdmi_phy_set_bus_width(struct rockchip_phy *phy, u32 bus_width)
 	struct inno_hdmi_phy *inno = dev_get_priv(phy->dev);
 
 	inno->bus_width = bus_width;
+	printf("%s: inno->bus_width: %u\n",__func__,inno->bus_width);
 
 	return 0;
 }
@@ -1028,6 +1043,7 @@ inno_hdmi_phy_clk_round_rate(struct rockchip_phy *phy, unsigned long rate)
 	const struct pre_pll_config *cfg = pre_pll_cfg_table;
 	u32 tmdsclock = inno_hdmi_phy_get_tmdsclk(inno, rate);
 
+	printf("%s: tmdsclock: %u\n",__func__,tmdsclock);
 	for (; cfg->pixclock != ~0UL; cfg++)
 		if (cfg->pixclock == rate)
 			break;
@@ -1057,6 +1073,7 @@ inno_hdmi_phy_clk_round_rate(struct rockchip_phy *phy, unsigned long rate)
 	if (inno->phy_cfg[i].tmdsclock == ~0UL)
 		return -EINVAL;
 
+	printf("%s: cfg->pixclock: %lu\n",__func__,cfg->pixclock);
 	return cfg->pixclock;
 }
 
@@ -1094,6 +1111,7 @@ static int inno_hdmi_phy_probe(struct udevice *dev)
 	inno->dev = dev;
 	phy->dev = dev;
 
+	printf("%s: done!\n", __func__);
 	return 0;
 }
 

@@ -289,6 +289,7 @@ int uclass_first_device(enum uclass_id id, struct udevice **devp);
  * @return 0 if found, -ENODEV if not found, other -ve on error
  */
 int uclass_first_device_err(enum uclass_id id, struct udevice **devp);
+int uclass_first_device_err_rk3328(enum uclass_id id, struct udevice **devp);
 
 /**
  * uclass_next_device() - Get the next device in a uclass

@@ -19,10 +19,10 @@ static inline struct phy_ops *phy_dev_ops(struct udevice *dev)
 static int generic_phy_xlate_offs_flags(struct phy *phy,
 					struct ofnode_phandle_args *args)
 {
-	debug("%s(phy=%p)\n", __func__, phy);
+	printf("%s(phy=%p)\n", __func__, phy);
 
 	if (args->args_count > 1) {
-		debug("Invaild args_count: %d\n", args->args_count);
+		printf("Invaild args_count: %d\n", args->args_count);
 		return -EINVAL;
 	}
 
@@ -42,21 +42,21 @@ int generic_phy_get_by_index(struct udevice *dev, int index,
 	int ret;
 	struct udevice *phydev;
 
-	debug("%s(dev=%p, index=%d, phy=%p)\n", __func__, dev, index, phy);
+	printf("%s(dev=%p, index=%d, phy=%p)\n", __func__, dev, index, phy);
 
 	assert(phy);
 	phy->dev = NULL;
 	ret = dev_read_phandle_with_args(dev, "phys", "#phy-cells", 0, index,
 					 &args);
 	if (ret) {
-		debug("%s: dev_read_phandle_with_args failed: err=%d\n",
+		printf("%s: dev_read_phandle_with_args failed: err=%d\n",
 		      __func__, ret);
 		return ret;
 	}
 
 	ret = uclass_get_device_by_ofnode(UCLASS_PHY, args.node, &phydev);
 	if (ret) {
-		debug("%s: uclass_get_device_by_ofnode failed: err=%d\n",
+		printf("%s: uclass_get_device_by_ofnode failed: err=%d\n",
 		      __func__, ret);
 		return ret;
 	}
@@ -70,7 +70,7 @@ int generic_phy_get_by_index(struct udevice *dev, int index,
 	else
 		ret = generic_phy_xlate_offs_flags(phy, &args);
 	if (ret) {
-		debug("of_xlate() failed: %d\n", ret);
+		printf("of_xlate() failed: %d\n", ret);
 		goto err;
 	}
 
@@ -85,7 +85,7 @@ int generic_phy_get_by_name(struct udevice *dev, const char *phy_name,
 {
 	int index;
 
-	debug("%s(dev=%p, name=%s, phy=%p)\n", __func__, dev, phy_name, phy);
+	printf("%s(dev=%p, name=%s, phy=%p)\n", __func__, dev, phy_name, phy);
 
 	index = dev_read_stringlist_search(dev, "phy-names", phy_name);
 	if (index < 0) {
@@ -93,6 +93,7 @@ int generic_phy_get_by_name(struct udevice *dev, const char *phy_name,
 		return index;
 	}
 
+	printf("%s: done\n",__func__);
 	return generic_phy_get_by_index(dev, index, phy);
 }
 
@@ -104,6 +105,7 @@ int generic_phy_init(struct phy *phy)
 		return 0;
 	ops = phy_dev_ops(phy->dev);
 
+	printf("%s: done\n",__func__);
 	return ops->init ? ops->init(phy) : 0;
 }
 
@@ -115,6 +117,7 @@ int generic_phy_reset(struct phy *phy)
 		return 0;
 	ops = phy_dev_ops(phy->dev);
 
+	printf("%s: done\n",__func__);
 	return ops->reset ? ops->reset(phy) : 0;
 }
 
@@ -126,6 +129,7 @@ int generic_phy_exit(struct phy *phy)
 		return 0;
 	ops = phy_dev_ops(phy->dev);
 
+	printf("%s: done\n",__func__);
 	return ops->exit ? ops->exit(phy) : 0;
 }
 
@@ -137,6 +141,7 @@ int generic_phy_power_on(struct phy *phy)
 		return 0;
 	ops = phy_dev_ops(phy->dev);
 
+	printf("%s: done\n",__func__);
 	return ops->power_on ? ops->power_on(phy) : 0;
 }
 
@@ -148,6 +153,7 @@ int generic_phy_power_off(struct phy *phy)
 		return 0;
 	ops = phy_dev_ops(phy->dev);
 
+	printf("%s: done\n",__func__);
 	return ops->power_off ? ops->power_off(phy) : 0;
 }
 
@@ -159,6 +165,7 @@ int generic_phy_configure(struct phy *phy, union phy_configure_opts *opts)
 		return 0;
 	ops = phy_dev_ops(phy->dev);
 
+	printf("%s: done\n",__func__);
 	return ops->configure ? ops->configure(phy, opts) : 0;
 }
 
@@ -171,6 +178,7 @@ int generic_phy_validate(struct phy *phy, enum phy_mode mode, int submode,
 		return 0;
 	ops = phy_dev_ops(phy->dev);
 
+	printf("%s: done\n",__func__);
 	return ops->validate ? ops->validate(phy, mode, submode, opts) : 0;
 }
 
@@ -190,6 +198,7 @@ int generic_phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode)
 	if (!ret)
 		phy->attrs.mode = mode;
 
+	printf("%s: done\n",__func__);
 	return ret;
 }
 
