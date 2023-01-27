@@ -40,7 +40,7 @@ int display_read_timing(struct udevice *dev, struct display_timing *timing);
  * @timing:	Display timings
  * @return 0 if OK, -ve on error
  */
-int display_enable(struct udevice *dev, int panel_bpp,
+int rk3328_display_enable(struct udevice *dev, int panel_bpp,
 		   const struct display_timing *timing);
 
 /**

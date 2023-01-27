@@ -100,9 +100,54 @@ static int clk_get_by_indexed_prop(struct udevice *dev, const char *prop_name,
 	return clk_request(dev_clk, clk);
 }
 
+static int rk3328_clk_get_by_indexed_prop(struct udevice *dev, const char *prop_name,
+                                   int index, struct clk *clk)
+{
+        int ret;
+        struct ofnode_phandle_args args;
+        struct udevice *dev_clk;
+        const struct clk_ops *ops;
+
+        printf("%s(dev=%p, index=%d, clk=%p)\n", __func__, dev, index, clk);
+
+        assert(clk);
+        clk->dev = NULL;
+
+        ret = dev_read_phandle_with_args(dev, prop_name, "#clock-cells", 0,
+                                         index, &args);
+        if (ret) {
+                printf("%s: fdtdec_parse_phandle_with_args failed: err=%d\n",
+                      __func__, ret);
+                return ret;
+        }
+
+        ret = uclass_get_device_by_ofnode(UCLASS_CLK, args.node, &dev_clk);
+        if (ret) {
+                printf("%s: uclass_get_device_by_of_offset failed: err=%d\n",
+                      __func__, ret);
+                return ret;
+        }
+
+        clk->dev = dev_clk;
+
+	printf("%s: dev_clk->name:%s\n",__func__,dev_clk->name);
+        ops = clk_dev_ops(dev_clk);
+
+        if (ops->of_xlate)
+                ret = ops->of_xlate(clk, &args);
+        else
+                ret = clk_of_xlate_default(clk, &args);
+        if (ret) {
+                printf("of_xlate() failed: %d\n", ret);
+                return ret;
+        }
+
+        return clk_request(dev_clk, clk);
+}
+
 int clk_get_by_index(struct udevice *dev, int index, struct clk *clk)
 {
-	return clk_get_by_indexed_prop(dev, "clocks", index, clk);
+	return rk3328_clk_get_by_indexed_prop(dev, "clocks", index, clk);
 }
 
 int clk_get_bulk(struct udevice *dev, struct clk_bulk *bulk)
@@ -338,7 +383,7 @@ ulong clk_set_rate(struct clk *clk, ulong rate)
 {
 	const struct clk_ops *ops = clk_dev_ops(clk->dev);
 
-	debug("%s(clk=%p, rate=%lu)\n", __func__, clk, rate);
+	printf("%s(clk=%p, rate=%lu)\n", __func__, clk, rate);
 
 	if (!ops->set_rate)
 		return -ENOSYS;

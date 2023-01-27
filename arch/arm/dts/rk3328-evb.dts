@@ -343,6 +343,10 @@
         route {
                 route_hdmi: route-hdmi {
                         status = "okay";
+			logo,uboot = "logo.bmp";
+                        logo,kernel = "logo_kernel.bmp";
+                        logo,mode = "center";
+                        charge_logo,mode = "center";
                         connect = <&vop_out_hdmi>;
                 };
         };

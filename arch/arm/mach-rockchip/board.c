@@ -369,6 +369,7 @@ static void cmdline_handle(void)
 
 int board_late_init(void)
 {
+	printf("%s\n",__func__);
 #ifdef CONFIG_ROCKCHIP_SET_ETHADDR
 	rockchip_set_ethaddr();
 #endif
@@ -386,7 +387,7 @@ int board_late_init(void)
 	charge_display();
 #endif
 #ifdef CONFIG_DRM_ROCKCHIP
-	rockchip_show_logo();
+	rk3328_show_logo();
 #endif
 #ifdef CONFIG_ROCKCHIP_EINK_DISPLAY
 	rockchip_eink_show_uboot_logo();
@@ -841,6 +842,7 @@ int bootm_image_populate_dtb(void *img)
 	else
 		gd->fdt_blob = (void *)env_get_ulong("fdt_addr_r", 16, 0);
 
+	printf("%s:\n",__func__);
 	return rockchip_ram_read_dtb_file(img, (void *)gd->fdt_blob);
 }
 

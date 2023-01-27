@@ -82,6 +82,7 @@ void *uimage_load_bootables(void)
 	ulong faddr;
 	int blknum;
 
+	printf("%s:\n",__func__);
 	raddr = env_get_ulong("ramdisk_addr_r", 16, 0);
 	kaddr = env_get_ulong("kernel_addr_r", 16, 0);
 	faddr = env_get_ulong("fdt_addr_r", 16, 0);
@@ -197,6 +198,7 @@ int uimage_init_resource(void)
 #endif
 	int ret;
 
+	printf("%s:\n",__func__);
 	dev_desc = rockchip_get_bootdev();
 	if (!dev_desc) {
 		printf("No dev_desc!\n");

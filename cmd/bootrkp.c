@@ -306,6 +306,7 @@ static int do_boot_rockchip(cmd_tbl_t *cmdtp, int flag,
 	struct blk_desc *dev_desc;
 	disk_partition_t part;
 	int ret;
+	printf("%s:\n",__func__);
 
 	dev_desc = rockchip_get_bootdev();
 	if (!dev_desc) {

@@ -2686,6 +2686,7 @@ static void drm_add_hdmi_modes(struct hdmi_edid_data *data,
 {
 	struct drm_display_mode *mode_buf = data->mode_buf;
 
+	printf("%s:\n",__func__);
 	if (data->modes >= MODE_LEN)
 		return;
 	mode_buf[(data->modes)++] = *mode;
@@ -2766,6 +2767,7 @@ int do_cea_modes(struct hdmi_edid_data *data, const u8 *db, u8 len)
 	int i, modes = 0;
 	struct drm_hdmi_info *hdmi = &data->display_info.hdmi;
 
+	printf("%s:\n",__func__);
 	for (i = 0; i < len; i++) {
 		struct drm_display_mode *mode;
 
@@ -3423,6 +3425,7 @@ bool drm_detect_hdmi_monitor(struct edid *edid)
 	int i;
 	int start_offset, end_offset;
 
+	printf("%s:\n",__func__);
 	edid_ext = drm_find_cea_extension(edid);
 	if (!edid_ext)
 		return false;
@@ -5539,18 +5542,19 @@ int drm_add_edid_modes(struct hdmi_edid_data *data, u8 *raw_edid)
 	u32 quirks;
 	struct edid *edid = (struct edid *)raw_edid;
 
+	printf("%s:\n",__func__);
 	if (!edid) {
-		debug("no edid\n");
+		printf("no edid\n");
 		return 0;
 	}
 
 	if (!drm_edid_is_valid(edid)) {
-		debug("EDID invalid\n");
+		printf("EDID invalid\n");
 		return 0;
 	}
 
 	if (!data->mode_buf) {
-		debug("mode buff is null\n");
+		printf("mode buff is null\n");
 		return 0;
 	}
 
@@ -5612,6 +5616,7 @@ u8 drm_match_cea_mode(struct drm_display_mode *to_match)
 {
 	u8 vic;
 
+	printf("%s:\n",__func__);
 	if (!to_match->clock) {
 		printf("can't find to match\n");
 		return 0;
@@ -6719,6 +6724,7 @@ void drm_mode_sort(struct hdmi_edid_data *edid_data)
 	struct drm_display_mode c;
 	int diff, i, j;
 
+	printf("%s:\n",__func__);
 	for (i = 0; i < (edid_data->modes - 1); i++) {
 		a = &edid_data->mode_buf[i];
 		for (j = i + 1; j < edid_data->modes; j++) {
@@ -6804,6 +6810,7 @@ void drm_rk_filter_whitelist(struct hdmi_edid_data *edid_data)
 {
 	int i, j, white_len;
 
+	printf("%s:\n",__func__);
 	if (sizeof(resolution_white)) {
 		white_len = sizeof(resolution_white) /
 			sizeof(resolution_white[0]);
@@ -6899,10 +6906,11 @@ int drm_do_get_edid(struct ddc_adapter *adap, u8 *edid)
 {
 	int i, j, block_num, block = 0;
 	bool edid_corrupt;
-#ifdef DEBUG
+//#ifdef DEBUG
 	u8 *buff;
-#endif
+//#endif
 
+	printf("%s:\n",__func__);
 	/* base block fetch */
 	for (i = 0; i < 4; i++) {
 		if (drm_do_probe_ddc_edid(adap, edid, 0, HDMI_EDID_BLOCK_SIZE))
@@ -6938,7 +6946,7 @@ int drm_do_get_edid(struct ddc_adapter *adap, u8 *edid)
 		block++;
 	}
 
-#ifdef DEBUG
+//#ifdef DEBUG
 	printf("RAW EDID:\n");
 	for (i = 0; i < block_num + 1; i++) {
 		buff = &edid[0x80 * i];
@@ -6949,7 +6957,7 @@ int drm_do_get_edid(struct ddc_adapter *adap, u8 *edid)
 		}
 		printf("\n");
 	}
-#endif
+//#endif
 
 	return 0;
 

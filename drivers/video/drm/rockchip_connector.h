@@ -62,6 +62,7 @@ struct rockchip_connector_funcs {
 	 * Save data to dts, then you can share data to kernel space.
 	 */
 	int (*fixup_dts)(struct display_state *state, void *blob);
+	int (*read_edid)(struct udevice *dev, u8 *buf, int buf_size);
 };
 
 const struct rockchip_connector *

@@ -243,6 +243,7 @@ static void inno_hdmi_i2c_init(struct inno_hdmi *hdmi)
 {
 	int ddc_bus_freq;
 
+	printf("%s:\n",__func__);
 	ddc_bus_freq = (hdmi->tmds_rate >> 2) / HDMI_SCL_RATE;
 	hdmi_writeb(hdmi, DDC_BUS_FREQ_L, ddc_bus_freq & 0xFF);
 	hdmi_writeb(hdmi, DDC_BUS_FREQ_H, (ddc_bus_freq >> 8) & 0xFF);
@@ -257,6 +258,7 @@ static void inno_hdmi_reset(struct inno_hdmi *hdmi)
 	u32 val;
 	u32 msk;
 
+	printf("%s:\n",__func__);
 	hdmi_modb(hdmi, HDMI_SYS_CTRL, m_RST_DIGITAL, v_NOT_RST_DIGITAL);
 	udelay(100);
 
@@ -319,6 +321,7 @@ static int inno_hdmi_config_video_avi(struct inno_hdmi *hdmi,
 	union hdmi_infoframe frame;
 	int rc;
 
+	printf("%s:\n",__func__);
 	rc = drm_hdmi_avi_infoframe_from_display_mode(&frame.avi, mode, false);
 
 	if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV444)
@@ -346,6 +349,7 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
 	int value;
 	int i;
 
+	printf("%s:\n",__func__);
 	/* Input video mode is SDR RGB24bit, data enable signal from external */
 	hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL1, v_DE_EXTERNAL |
 		    v_VIDEO_INPUT_FORMAT(VIDEO_INPUT_SDR_RGB444));
@@ -418,6 +422,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
 {
 	int value;
 
+	printf("%s:\n",__func__);
 	if (hdmi->plat_data->dev_type == RK3036_HDMI) {
 		value = BIT(20) | BIT(21);
 		value |= mode->flags & DRM_MODE_FLAG_PHSYNC ? BIT(4) : 0;
@@ -474,6 +479,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
 static int inno_hdmi_setup(struct inno_hdmi *hdmi,
 			   struct drm_display_mode *mode)
 {
+	printf("%s:\n",__func__);
 	hdmi->hdmi_data.vic = drm_match_cea_mode(mode);
 
 	hdmi->hdmi_data.enc_in_format = HDMI_COLORSPACE_RGB;
@@ -594,6 +600,7 @@ static int inno_hdmi_i2c_xfer(struct ddc_adapter *adap,
 	struct inno_hdmi *hdmi = container_of(adap, struct inno_hdmi, adap);
 	int i, ret = 0;
 
+	printf("%s:\n",__func__);
 	/* Clear the EDID interrupt flag and unmute the interrupt */
 	hdmi_writeb(hdmi, HDMI_INTERRUPT_MASK1, m_INT_EDID_READY);
 	hdmi_writeb(hdmi, HDMI_INTERRUPT_STATUS1, m_INT_EDID_READY);
@@ -624,6 +631,7 @@ int rockchip_inno_hdmi_pre_init(struct display_state *state)
 {
 	struct connector_state *conn_state = &state->conn_state;
 
+	printf("%s:\n",__func__);
 	conn_state->type = DRM_MODE_CONNECTOR_HDMIA;
 
 	return 0;
@@ -638,6 +646,7 @@ static int rockchip_inno_hdmi_init(struct display_state *state)
 	ofnode hdmi_node = conn_state->node;
 	int ret;
 
+	printf("%s:\n",__func__);
 	hdmi = calloc(1, sizeof(struct inno_hdmi));
 	if (!hdmi)
 		return -ENOMEM;
@@ -702,6 +711,7 @@ static int rockchip_inno_hdmi_enable(struct display_state *state)
 	struct drm_display_mode *mode = &conn_state->mode;
 	struct inno_hdmi *hdmi = conn_state->private;
 
+	printf("%s:\n",__func__);
 	if (!hdmi)
 		return -EFAULT;
 
@@ -727,6 +737,7 @@ static void rockchip_inno_hdmi_deinit(struct display_state *state)
 
 static int rockchip_inno_hdmi_prepare(struct display_state *state)
 {
+	printf("%s:\n",__func__);
 	return 0;
 }
 
@@ -744,6 +755,7 @@ static int rockchip_inno_hdmi_detect(struct display_state *state)
 	struct connector_state *conn_state = &state->conn_state;
 	struct inno_hdmi *hdmi = conn_state->private;
 
+	printf("%s:\n",__func__);
 	return (hdmi_readb(hdmi, HDMI_STATUS) & m_HOTPLUG) ?
 		connector_status_connected : connector_status_disconnected;
 }
@@ -757,6 +769,7 @@ static int rockchip_inno_hdmi_get_timing(struct display_state *state)
 	struct edid *edid = (struct edid *)conn_state->edid;
 	const u8 def_modes_vic[6] = {16, 4, 2, 17, 31, 19};
 
+	printf("%s:\n",__func__);
 	if (!hdmi)
 		return -EFAULT;
 
@@ -800,6 +813,7 @@ static int rockchip_inno_hdmi_get_timing(struct display_state *state)
 
 static int rockchip_inno_hdmi_probe(struct udevice *dev)
 {
+	printf("%s:\n",__func__);
 	return 0;
 }
 

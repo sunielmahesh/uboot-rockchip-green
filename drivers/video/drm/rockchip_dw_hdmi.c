@@ -347,6 +347,7 @@ void drm_rk_selete_output(struct hdmi_edid_data *edid_data,
 	disk_partition_t part_info;
 	char baseparameter_buf[8 * RK_BLK_SIZE] __aligned(ARCH_DMA_MINALIGN);
 
+	printf("%s:\n",__func__);
 	overscan->left_margin = max_scan;
 	overscan->right_margin = max_scan;
 	overscan->top_margin = max_scan;
@@ -456,6 +457,7 @@ null_basep:
 
 void inno_dw_hdmi_set_domain(void *grf, int status)
 {
+	printf("%s:\n",__func__);
 	if (status)
 		writel(RK3328_IO_5V_DOMAIN, grf + RK3328_GRF_SOC_CON4);
 	else
@@ -466,18 +468,22 @@ void dw_hdmi_set_iomux(void *grf, int dev_type)
 {
 	switch (dev_type) {
 	case RK3328_HDMI:
+		printf("%s:RK3328_HDMI\n",__func__);
 		writel(RK3328_IO_DDC_IN_MSK, grf + RK3328_GRF_SOC_CON2);
 		writel(RK3328_IO_CTRL_BY_HDMI, grf + RK3328_GRF_SOC_CON3);
 		break;
 	case RK3228_HDMI:
+		printf("%s:RK3228_HDMI\n",__func__);
 		writel(RK3228_IO_3V_DOMAIN, grf + RK3228_GRF_SOC_CON6);
 		writel(RK3228_IO_DDC_IN_MSK, grf + RK3228_GRF_SOC_CON2);
 		break;
 	case RK3568_HDMI:
+		printf("%s:RK3568_HDMI\n",__func__);
 		writel(RK3568_HDMI_SDAIN_MSK | RK3568_HDMI_SCLIN_MSK,
 		       grf + RK3568_GRF_VO_CON1);
 		break;
 	default:
+		printf("%s:default\n",__func__);
 		break;
 	}
 }
@@ -620,4 +626,19 @@ U_BOOT_DRIVER(rockchip_dw_hdmi) = {
 	.id = UCLASS_DISPLAY,
 	.of_match = rockchip_dw_hdmi_ids,
 	.probe	= rockchip_dw_hdmi_probe,
+//	.ofdata_to_platdata = rk3328_hdmi_ofdata_to_platdata,
+//	.priv_auto_alloc_size = sizeof(struct rk_hdmi_priv),
 };
+
+
+#if 0
+U_BOOT_DRIVER(rockchip_dw_hdmi) = {
+        .name = "rockchip_dw_hdmi",
+        .id = UCLASS_DISPLAY,
+        .of_match = rockchip_dw_hdmi_ids,,
+        .ops = &rk3328_hdmi_ops,
+        .ofdata_to_platdata = rk3328_hdmi_ofdata_to_platdata,
+        .probe = rockchip_dw_hdmi_probe,
+        .priv_auto_alloc_size = sizeof(struct rk_hdmi_priv),
+};
+#endif

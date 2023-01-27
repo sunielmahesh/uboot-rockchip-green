@@ -494,29 +494,35 @@ static ulong rk3328_vop_get_clk(struct rk3328_clk_priv *priv, ulong clk_id)
 	struct rk3328_cru *cru = priv->cru;
 	u32 div, con, parent;
 
+	printf("%s: clk_id: %lu\n",__func__,clk_id);
 	switch (clk_id) {
 	case ACLK_VOP_PRE:
 	case ACLK_VOP:
+		printf("%s: ACLK_VOP\n",__func__);
 		con = readl(&cru->clksel_con[39]);
 		div = (con & ACLK_VOP_DIV_CON_MASK) >> ACLK_VOP_DIV_CON_SHIFT;
 		parent = priv->cpll_hz;
 		break;
 	case ACLK_VIO_PRE:
 	case ACLK_VIO:
+		printf("%s: ACLK_VIO\n",__func__);
 		con = readl(&cru->clksel_con[37]);
 		div = (con & ACLK_VIO_DIV_CON_MASK) >> ACLK_VIO_DIV_CON_SHIFT;
 		parent = priv->cpll_hz;
 		break;
 	case HCLK_VIO_PRE:
 	case HCLK_VIO:
+		printf("%s: HCLK_VIO\n",__func__);
 		parent = rk3328_vop_get_clk(priv, ACLK_VIO_PRE);
 		con = readl(&cru->clksel_con[37]);
 		div = (con & HCLK_VIO_DIV_CON_MASK) >> HCLK_VIO_DIV_CON_SHIFT;
 		break;
 	default:
+		printf("%s: in default\n",__func__);
 		return -ENOENT;
 	}
 
+	printf("%s: DIV_TO_RATE(parent, div): %u\n",__func__,DIV_TO_RATE(parent, div));
 	return DIV_TO_RATE(parent, div);
 }
 
@@ -530,9 +536,11 @@ static ulong rk3328_vop_set_clk(struct rk3328_clk_priv *priv,
 	src_clk_div = DIV_ROUND_UP(priv->cpll_hz, hz);
 	assert(src_clk_div - 1 < 31);
 
+	printf("%s: clk_id: %lu\n",__func__,clk_id);
 	switch (clk_id) {
 	case ACLK_VOP_PRE:
 	case ACLK_VOP:
+		printf("%s: ACLK_VOP\n",__func__);
 		rk_clrsetreg(&cru->clksel_con[39],
 			     ACLK_VOP_PLL_SEL_MASK | ACLK_VOP_DIV_CON_MASK,
 			     ACLK_VOP_PLL_SEL_CPLL << ACLK_VOP_PLL_SEL_SHIFT |
@@ -547,6 +555,7 @@ static ulong rk3328_vop_set_clk(struct rk3328_clk_priv *priv,
 		break;
 	case HCLK_VIO_PRE:
 	case HCLK_VIO:
+		printf("%s: HCLK_VIO\n",__func__);
 		src_clk_div = DIV_ROUND_UP(rk3328_vop_get_clk(priv,
 							      ACLK_VIO_PRE),
 					   hz);
@@ -555,6 +564,7 @@ static ulong rk3328_vop_set_clk(struct rk3328_clk_priv *priv,
 			     (src_clk_div - 1) << HCLK_VIO_DIV_CON_SHIFT);
 		break;
 	case DCLK_LCDC:
+		printf("%s: DCLK_LCDC\n",__func__);
 		con = readl(&cru->clksel_con[40]);
 		con = (con & DCLK_LCDC_SEL_MASK) >> DCLK_LCDC_SEL_SHIFT;
 		if (con) {

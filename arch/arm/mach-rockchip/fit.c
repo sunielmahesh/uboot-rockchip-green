@@ -146,6 +146,7 @@ static void *fit_get_blob(struct blk_desc *dev_desc,
 	void *fit, *fdt;
 	int blk_num;
 
+	printf("%s:\n",__func__);
 	if (rockchip_get_boot_mode() == BOOT_MODE_RECOVERY)
 		part_name = PART_RECOVERY;
 	else

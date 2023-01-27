@@ -183,6 +183,7 @@ static int rockchip_vop_probe(struct udevice *dev)
 	for (device_find_first_child(dev, &child);
 	     child;
 	     device_find_next_child(&child)) {
+		printf("%s: child->name: %s\n",__func__,child->name);
 		ret = device_probe(child);
 		if (ret)
 			return ret;

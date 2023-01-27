@@ -49,6 +49,7 @@ void video_set_flush_dcache(struct udevice *dev, bool flush)
 {
 	struct video_priv *priv = dev_get_uclass_priv(dev);
 
+	printf("%s:\n",__func__);
 	priv->flush_dcache = flush;
 }
 

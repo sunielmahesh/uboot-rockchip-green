@@ -794,6 +794,7 @@ int android_fdt_overlay_apply(void *fdt_addr)
 	int index = -1;
 	int ret;
 
+	printf("%s:\n",__func__);
 	if (rockchip_get_boot_mode() == BOOT_MODE_RECOVERY) {
 #ifdef CONFIG_ANDROID_AB
 		bool can_find_recovery;
@@ -920,6 +921,7 @@ int android_bootloader_boot_flow(struct blk_desc *dev_desc,
 	const char *mode_cmdline = NULL;
 	char *boot_partname = ANDROID_PARTITION_BOOT;
 
+	printf("%s:\n",__func__);
 	/*
 	 * 1. Load MISC partition and determine the boot mode
 	 *   clear its value for the next boot if needed.

@@ -578,6 +578,7 @@ static int charge_animation_show(struct udevice *dev)
 	int first_poll_fg = 1;
 	bool lp_shutdown = false;
 
+	printf("%s:\n",__func__);
 /*
  * Check sequence:
  *

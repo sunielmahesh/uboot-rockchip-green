@@ -346,6 +346,7 @@ static int get_resource_base_sector(struct blk_desc *dev_desc,
 	u32 os_ver = 0, os_lvl;
 	const char *part_boot = PART_BOOT;
 
+	printf("%s:\n",__func__);
 	/*
 	 * Anyway, we must read android hdr firstly from boot/recovery partition
 	 * to get the 'os_version' for android_bcb_msg_sector_offset(), in order
@@ -429,6 +430,7 @@ int resource_init_list(void)
 	struct blk_desc *dev_desc;
 	int rsce_base;
 
+	printf("%s:\n",__func__);
 	dev_desc = rockchip_get_bootdev();
 	if (!dev_desc) {
 		printf("No dev_desc!\n");
@@ -456,14 +458,17 @@ static struct resource_file *get_file_info(const char *name)
 	struct list_head *node;
 
 	if (list_empty(&entrys_head)) {
+		printf("%s:\n",__func__);
 		if (resource_init_list())
 			return NULL;
 	}
 
 	list_for_each(node, &entrys_head) {
 		file = list_entry(node, struct resource_file, link);
-		if (!strcmp(file->name, name))
+		if (!strcmp(file->name, name)) {
+		printf("%s: returning file\n",__func__);
 			return file;
+		}
 	}
 
 	return NULL;
@@ -484,6 +489,7 @@ int rockchip_read_resource_file(void *buf, const char *name, int offset, int len
 	int blks;
 	ulong src;
 
+	printf("%s:\n",__func__);
 	file = get_file_info(name);
 	if (!file) {
 		printf("No file: %s\n", name);
@@ -551,6 +557,7 @@ int rockchip_read_resource_dtb(void *fdt_addr, char **hash, int *hash_size)
 	struct resource_file *file = NULL;
 	int ret;
 
+	printf("%s:\n",__func__);
 #ifdef CONFIG_ROCKCHIP_HWID_DTB
 	file = resource_read_hwid_dtb();
 #endif

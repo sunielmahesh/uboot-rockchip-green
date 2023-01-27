@@ -25,6 +25,7 @@ static int misc_require_recovery(u32 bcb_offset, int *bcb_recovery_msg)
 	disk_partition_t part;
 	int cnt, recovery = 0;
 
+	printf("%s:\n",__func__);
 	dev_desc = rockchip_get_bootdev();
 	if (!dev_desc) {
 		printf("dev_desc is NULL!\n");
@@ -59,6 +60,7 @@ out:
 int get_bcb_recovery_msg(void)
 {
 	int bcb_recovery_msg = BCB_MSG_RECOVERY_NONE;
+	printf("%s:\n",__func__);
 #ifdef CONFIG_ANDROID_BOOT_IMAGE
 	u32 bcb_offset = android_bcb_msg_sector_offset();
 #else
@@ -147,6 +149,7 @@ int rockchip_get_boot_mode(void)
 	else if (boot_mode[PL] != -EINVAL)
 		return boot_mode[PL];
 
+	printf("%s:\n",__func__);
 	/*
 	 * Boot mode priority
 	 *
@@ -224,6 +227,7 @@ int setup_boot_mode(void)
 {
 	char env_preboot[256] = {0};
 
+	printf("%s:\n",__func__);
 	switch (rockchip_get_boot_mode()) {
 	case BOOT_MODE_BOOTLOADER:
 		printf("enter fastboot!\n");

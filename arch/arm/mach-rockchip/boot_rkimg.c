@@ -596,6 +596,7 @@ int rockchip_ram_read_dtb_file(void *img, void *fdt)
 
 	format = (genimg_get_format(img));
 #ifdef CONFIG_ANDROID_BOOT_IMAGE
+	printf("%s:\n",__func__);
 	if (format == IMAGE_FORMAT_ANDROID) {
 		struct andr_img_hdr *hdr = img;
 		struct blk_desc *dev_desc;
@@ -608,12 +609,14 @@ int rockchip_ram_read_dtb_file(void *img, void *fdt)
 		offset = hdr->page_size + ALIGN(hdr->kernel_size, hdr->page_size) +
 			ALIGN(hdr->ramdisk_size, hdr->page_size);
 #ifdef CONFIG_ROCKCHIP_RESOURCE_IMAGE
+		printf("%s:\n",__func__);
 		ret = resource_create_ram_list(dev_desc, (void *)hdr + offset);
 		if (ret)
 			return ret;
 
 		return rockchip_read_dtb_file((void *)fdt);
 #else
+		printf("%s:\n",__func__);
 		if (fdt_check_header((void *)offset))
 			return -EINVAL;
 
